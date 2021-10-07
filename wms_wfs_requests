@@ -1,0 +1,84 @@
+<html>
+  <head>
+  <script
+  src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+   
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+      #map {
+        width: 100%;
+        height: 500px;
+      }
+    </style>
+	
+  </head>
+  <body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.7/dist/leaflet.js"></script>
+  </body>
+</html>
+
+<script>
+var map = L.map("map").setView([41, -74], 5);
+
+var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution:
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var baseLayers = {
+		"Streets": osm
+	};
+
+var control = new L.control.layers(baseLayers).addTo(map);
+
+var wms_layer = L.tileLayer.wms("http://localhost:8585/geoserver/trickworld/wms", {
+        layers: 'trickworld:states',
+        format: 'image/png',
+        transparent: true,
+
+        cql_filter: "STATE_NAME='District of Columbia'",
+       
+        version: '1.1.0',
+        attribution: "states"
+    });
+
+  wms_layer.addTo(map);
+
+/*$.ajax(
+  'http://localhost:8585/geoserver/trickworld/ows?', 
+  {
+  type: 'GET',
+  data: {
+      service: 'WFS',
+      request: 'GetFeature',
+      typename: 'trickworld:states',
+      srsname: 'EPSG:4326',
+      outputFormat: 'text/javascript',
+      cql_filter: "STATE_NAME='District of Columbia'", 
+  },
+
+  dataType: 'jsonp',
+  jsonpCallback:'callback:handleJson',
+  jsonp:'format_options',
+
+ });
+
+ var myStyle = {'color': 'red'}
+
+function handleJson(data) {
+  
+    selectedArea = L.geoJson(data, {
+      style: myStyle,
+      onEachFeature: function(feature, layer) {
+        layer.bindPopup('Name:' + feature.properties.STATE_NAME);
+      }
+    }).addTo(map);  
+
+	control.addOverlay(selectedArea, 'STATES');
+  map.fitBounds(selectedArea.getBounds());
+}*/
+
+</script>
